@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Link}  from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 import './novaconta.css';
 import firebase from '../Config/firebase'
 import 'firebase/auth';
@@ -8,6 +8,7 @@ function NovaConta(){
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [mensagem, setMensagem] = useState('');
+  const [sucesso, setSucesso] = useState('');
 
   function alterarEmail(event) {
     setEmail(event.target.value)
@@ -18,16 +19,19 @@ function NovaConta(){
   }
 
   function cadastrarUsuario() {
-    console.log('entrou')
-    firebase.auth().signInWithEmailAndPassword(email, senha)
+    setMensagem('')
+    if (!email || !senha) {
+      setMensagem('Informe todos os campos!');
+      return;
+    }
+
+    firebase.auth().createUserWithEmailAndPassword(email, senha)
       .then(function (firebaseUser) {
-        console.log('S')
-        setMensagem('S');
+        setSucesso('S')
       }).catch(function (error) {
-        console.log('N')
-        setMensagem('N');
+        setMensagem('Usuário ou senha inválida!');
+        setSucesso('N')
       })
-      console.log('saiu')
   }
 
 
@@ -46,12 +50,15 @@ function NovaConta(){
         <label for="floatingPassword">Senha</label>
       </div>
         
-        <button onClick={cadastrarUsuario} className="w-100 btn btn-lg btn-primary" type="submit">Criar conta</button>
+        <button onClick={cadastrarUsuario} className="w-100 btn btn-lg btn-primary" type="button">Criar conta</button>
         
         {mensagem.length > 0 ?
         <div class="alert alert-warning mt-2" role="alert">
-          Usuário ou senha inválida!
+          {mensagem}
         </div> : null}
+
+        {sucesso === 'S' ?
+        <Redirect to='/app/home'/>: null}
 
         <div className="login-links mt-5">
           <Link to="/app" className="mx-3">Já tenho uma conta.</Link>

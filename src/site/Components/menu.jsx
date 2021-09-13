@@ -5,7 +5,7 @@ function Menu(){
 
     <div className="container">
             
-        <a className="navbar-brand" href="#">
+        <a className="navbar-brand" href="#/">
           <img src="Images/logo.png" alt="" height="28" />
         </a>
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import './login.css';
 import firebase from '../Config/firebase'
 import 'firebase/auth';
@@ -51,6 +51,8 @@ function Login() {
         <div class="alert alert-warning mt-2" role="alert">
           Usuário ou senha inválida!
         </div> : null}
+      {sucesso === 'S' ?
+        <Redirect to='/app/home'/>: null}
 
       <div className="login-links mt-5">
         <Link to="/app/resetsenha" className="mx-3">Esqueci minha senha</Link>
