@@ -1,38 +1,39 @@
-import React from "react";
-import "./listacliente.css";
+import React from 'react';
+import {Link} from 'react-router-dom';
+import './listacliente.css';
 
-function ListaClientes() {
-  return (
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">First</th>
-          <th scope="col">Last</th>
-          <th scope="col">Handle</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td colspan="2">Larry the Bird</td>
-          <td>@twitter</td>
-        </tr>
-      </tbody>
-    </table>
-  );
+function ListaClientes(props){
+    
+    return <table className="table table-hover table-bordered">
+            <thead>
+            <tr className="table-secondary">
+                <th scope="col">Código</th>
+                <th scope="col">Nome</th>
+                <th scope="col">E-mail</th>
+                <th scope="col">Telefone</th>
+                <th scope="col" className="col-acao"></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {
+                props.arrayClientes.map((cliente) => {
+                    return <tr key={cliente.id}>
+                    <th scope="row">{cliente.id}</th>
+                    <td>{cliente.nome}</td>
+                    <td>{cliente.email}</td>
+                    <td>{cliente.fone}</td>
+                    <td>
+                        <Link to={'/app/editarcliente/' + cliente.id}><i className="fas fa-edit icone-acao"></i></Link>
+                        <Link to='#' onClick={() => props.clickDelete(cliente.id)}><i className="far fa-trash-alt icone-acao red"></i></Link>
+                    </td>
+                </tr>
+                })
+            }
+                       
+            
+            </tbody>
+        </table>
 }
 
 export default ListaClientes;

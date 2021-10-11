@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {Link, Redirect}  from 'react-router-dom';
 import Navbar from '../Components/Navbar/navbar';
-import './novocliente.css';
+import './editarcliente.css';
 import firebase from '../Config/firebase';
+import 'firebase/firestore';
 
-function NovoCliente(){
+function EditarCliente(props){
 
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
@@ -13,7 +14,15 @@ function NovoCliente(){
     const [sucesso, setSucesso] = useState('N');
     const db = firebase.firestore();
 
-    function CadastrarCliente(){
+    useEffect(() => {
+        firebase.firestore().collection('clientes').doc(props.match.params.id).get().then((resultado) => {
+            setNome(resultado.data().nome);
+            setEmail(resultado.data().email);
+            setFone(resultado.data().fone);
+        })
+    }, [])
+
+    function AlterarCliente(){
 
       if (nome.length === 0){
         setMensagem('Informe o nome');
@@ -22,7 +31,7 @@ function NovoCliente(){
         setMensagem('Informe o e-mail');
       }
       else{
-          db.collection('clientes').add({
+          db.collection('clientes').doc(props.match.params.id).update({
             nome: nome,
             email: email,
             fone: fone
@@ -41,26 +50,31 @@ function NovoCliente(){
         <div className="container-fluid titulo">
 
           <div className="offset-lg-3 col-lg-6">
-            <h1>Novo Cliente</h1>
+            <h1>Editar Cliente</h1>
             <form>
               <div className="mb-3">
+                <label htmlFor="exampleInputEmail1" className="form-label">Código</label>
+                <input type="text" value={props.match.params.id} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" disabled />
+              </div>
+
+              <div className="mb-3">
                 <label htmlFor="exampleInputEmail1" className="form-label">Nome</label>
-                <input onChange={(e) => setNome(e.target.value)} type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />              
+                <input onChange={(e) => setNome(e.target.value)} value={nome} type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />              
               </div>
 
               <div className="mb-3">
                 <label htmlFor="exampleInputEmail1" className="form-label">E-mail</label>
-                <input onChange={(e) => setEmail(e.target.value)} type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />              
+                <input onChange={(e) => setEmail(e.target.value)} value={email} type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />              
               </div>
 
               <div className="mb-3">
                 <label htmlFor="exampleInputEmail1" className="form-label">Fone</label>
-                <input  onChange={(e) => setFone(e.target.value)} type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />              
+                <input  onChange={(e) => setFone(e.target.value)} value={fone} type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />              
               </div>
 
               <div className="text-center">
                 <Link to="/app/home" className="btn btn-outline-primary btn-acao">Cancelar</Link>
-                <button onClick={CadastrarCliente} type="button" className="btn btn-primary btn-acao">Salvar</button>
+                <button onClick={AlterarCliente} type="button" className="btn btn-primary btn-acao">Salvar</button>
               </div>
 
               {mensagem.length > 0 ? <div className="alert alert-danger mt-2" role="alert">{mensagem}</div> : null}
@@ -72,4 +86,4 @@ function NovoCliente(){
     </div>;  
   }
 
-export default NovoCliente;
+export default EditarCliente;
